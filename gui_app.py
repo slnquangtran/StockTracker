@@ -27,7 +27,17 @@ import webbrowser
 
 # Set appearance mode and theme
 ctk.set_appearance_mode("Dark")
-ctk.set_default_color_theme("blue")
+# Custom Color Palette
+COLORS = {
+    "bg_deep": "#0A0A0F",
+    "surface": "#16161E",
+    "primary": "#0066FF",
+    "accent": "#3B82F6",
+    "success": "#00C853",
+    "danger": "#FF3D00",
+    "text": "#E1E1E6",
+    "text_dark": "#94A3B8"
+}
 
 class StockTrackerApp(ctk.CTk):
     """Main application class for the stock tracking desktop app."""
@@ -36,13 +46,14 @@ class StockTrackerApp(ctk.CTk):
         super().__init__()
         
         # Configure window
-        self.title("Stock Tracker Pro")
-        self.geometry("1100x800")
+        self.title("Stock Tracker Pro | Institutional Intelligence")
+        self.geometry("1200x850")
+        self.configure(fg_color=COLORS["bg_deep"])
         
         # Initialize data models
         self.portfolio = Portfolio()
         self.fetcher = StockFetcher()
-        self.predictor = EnsemblePredictor() # Upgraded to Ensemble
+        self.predictor = EnsemblePredictor()
         self.sentiment_analyzer = SentimentAnalyzer()
         self.recommender = Recommender()
         
@@ -51,23 +62,26 @@ class StockTrackerApp(ctk.CTk):
         self.grid_rowconfigure(0, weight=1)
         
         # Sidebar
-        self.sidebar_frame = ctk.CTkFrame(self, width=200, corner_radius=0)
+        self.sidebar_frame = ctk.CTkFrame(self, width=220, corner_radius=0, fg_color=COLORS["surface"], border_width=1, border_color="#1E293B")
         self.sidebar_frame.grid(row=0, column=0, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(9, weight=1)
         
-        self.logo_label = ctk.CTkLabel(self.sidebar_frame, text="Stock Tracker Pro", 
-                                       font=ctk.CTkFont(size=20, weight="bold"))
-        self.logo_label.grid(row=0, column=0, padx=20, pady=(20, 10))
+        self.logo_label = ctk.CTkLabel(self.sidebar_frame, text="STOCK TRACKER", 
+                                       font=ctk.CTkFont(size=22, weight="bold"), text_color=COLORS["primary"])
+        self.logo_label.grid(row=0, column=0, padx=20, pady=(30, 5))
+        self.sub_logo = ctk.CTkLabel(self.sidebar_frame, text="QUANTUM EDITION", 
+                                     font=ctk.CTkFont(size=10, weight="bold"), text_color=COLORS["text_dark"])
+        self.sub_logo.grid(row=1, column=0, padx=20, pady=(0, 20))
         
         # Sidebar buttons
-        self.dashboard_button = self.create_sidebar_button("🏠 Dashboard", 1, self.show_dashboard)
-        self.portfolio_button = self.create_sidebar_button("💼 Portfolio", 2, self.show_portfolio)
-        self.analysis_button = self.create_sidebar_button("📊 Analysis", 3, self.show_analysis)
-        self.predictions_button = self.create_sidebar_button("🤖 Predictions", 4, self.show_predictions)
-        self.sentiment_button = self.create_sidebar_button("📰 Sentiment", 5, self.show_sentiment)
-        self.alerts_button = self.create_sidebar_button("🔔 Alerts", 6, self.show_alerts)
-        self.backtest_button = self.create_sidebar_button("📈 Backtesting", 7, self.show_backtesting)
-        self.settings_button = self.create_sidebar_button("⚙️ Settings", 8, self.show_settings)
+        self.dashboard_button = self.create_sidebar_button("🏠 Dashboard", 2, self.show_dashboard)
+        self.portfolio_button = self.create_sidebar_button("💼 Portfolio", 3, self.show_portfolio)
+        self.analysis_button = self.create_sidebar_button("📊 Analysis", 4, self.show_analysis)
+        self.predictions_button = self.create_sidebar_button("🤖 Predictions", 5, self.show_predictions)
+        self.sentiment_button = self.create_sidebar_button("📰 Sentiment", 6, self.show_sentiment)
+        self.alerts_button = self.create_sidebar_button("🔔 Alerts", 7, self.show_alerts)
+        self.backtest_button = self.create_sidebar_button("📈 Backtesting", 8, self.show_backtesting)
+        self.settings_button = self.create_sidebar_button("⚙️ Settings", 9, self.show_settings)
         
         self.appearance_mode_label = ctk.CTkLabel(self.sidebar_frame, text="Appearance Mode:", anchor="w")
         self.appearance_mode_label.grid(row=10, column=0, padx=20, pady=(10, 0))
@@ -76,8 +90,8 @@ class StockTrackerApp(ctk.CTk):
         self.appearance_mode_optionemenu.grid(row=11, column=0, padx=20, pady=(10, 20))
         
         # Main content area
-        self.main_content_frame = ctk.CTkFrame(self, corner_radius=0)
-        self.main_content_frame.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
+        self.main_content_frame = ctk.CTkFrame(self, corner_radius=15, fg_color=COLORS["bg_deep"], border_width=0)
+        self.main_content_frame.grid(row=0, column=1, sticky="nsew", padx=15, pady=15)
         self.main_content_frame.grid_columnconfigure(0, weight=1)
         self.main_content_frame.grid_rowconfigure(0, weight=1)
         
@@ -89,72 +103,78 @@ class StockTrackerApp(ctk.CTk):
         self.show_dashboard()
 
     def create_sidebar_button(self, text, row, command):
-        button = ctk.CTkButton(self.sidebar_frame, text=text, corner_radius=0, height=40, border_spacing=10,
-                               fg_color="transparent", text_color=("gray10", "gray90"), hover_color=("gray70", "gray30"),
+        button = ctk.CTkButton(self.sidebar_frame, text=text, corner_radius=8, height=45, border_spacing=10,
+                               fg_color="transparent", text_color="#94A3B8", hover_color="#1E293B",
+                               font=ctk.CTkFont(size=14),
                                anchor="w", command=command)
-        button.grid(row=row, column=0, sticky="ew")
+        button.grid(row=row, column=0, sticky="ew", padx=10, pady=2)
         return button
 
     def create_pages(self):
         """Pre-create placeholder frames for each page."""
-        self.pages["Dashboard"] = ctk.CTkFrame(self.main_content_frame)
-        self.pages["Portfolio"] = ctk.CTkFrame(self.main_content_frame)
-        self.pages["Analysis"] = ctk.CTkFrame(self.main_content_frame)
-        self.pages["AI Predictions"] = ctk.CTkFrame(self.main_content_frame)
-        self.pages["Sentiment"] = ctk.CTkFrame(self.main_content_frame)
-        self.pages["Alerts"] = ctk.CTkFrame(self.main_content_frame)
-        self.pages["Backtesting"] = ctk.CTkFrame(self.main_content_frame)
-        self.pages["Settings"] = ctk.CTkFrame(self.main_content_frame)
-        
-        for page in self.pages.values():
-            page.grid(row=0, column=0, sticky="nsew")
-            page.grid_columnconfigure(0, weight=1)
+        for page in ["Dashboard", "Portfolio", "Analysis", "AI Predictions", "Sentiment", "Alerts", "Backtesting", "Settings"]:
+            self.pages[page] = ctk.CTkFrame(self.main_content_frame, fg_color=COLORS["bg_deep"])
+            self.pages[page].grid(row=0, column=0, sticky="nsew")
+            self.pages[page].grid_columnconfigure(0, weight=1)
 
     def show_page(self, page_name):
-        """Bring the specified page to the front."""
-        page = self.pages[page_name]
-        page.tkraise()
+        # Bring the specified page to the front.
+        self.pages[page_name].tkraise()
         
-        # Update sidebar button highlighting
+        # Update button colors
         for name, button in [("Dashboard", self.dashboard_button), ("Portfolio", self.portfolio_button),
                              ("Analysis", self.analysis_button), ("AI Predictions", self.predictions_button),
                              ("Sentiment", self.sentiment_button), ("Alerts", self.alerts_button),
                              ("Backtesting", self.backtest_button), ("Settings", self.settings_button)]:
             if name == page_name:
-                button.configure(fg_color=("gray75", "gray25"))
+                button.configure(fg_color="#1E293B", text_color="white")
             else:
-                button.configure(fg_color="transparent")
+                button.configure(fg_color="transparent", text_color="#94A3B8")
 
     def show_dashboard(self):
         self.show_page("Dashboard")
         for widget in self.pages["Dashboard"].winfo_children():
             widget.destroy()
             
-        header = ctk.CTkLabel(self.pages["Dashboard"], text="Market Overview", 
-                              font=ctk.CTkFont(size=24, weight="bold"))
-        header.pack(pady=20)
+        header = ctk.CTkLabel(self.pages["Dashboard"], text="INSTITUTIONAL WORKSPACE", 
+                               font=ctk.CTkFont(size=24, weight="bold"), text_color=COLORS["text"])
+        header.pack(pady=(20, 10))
         
-        stats_frame = ctk.CTkFrame(self.pages["Dashboard"])
-        stats_frame.pack(fill="x", padx=20)
+        # Live Ticker Tape Simulator / Subtitle
+        subtitle = ctk.CTkLabel(self.pages["Dashboard"], text="Real-time Quantitative Analytics & Portfolio Governance", 
+                                font=ctk.CTkFont(size=12), text_color=COLORS["text_dark"])
+        subtitle.pack(pady=(0, 20))
+        
+        stats_frame = ctk.CTkFrame(self.pages["Dashboard"], fg_color="transparent")
+        stats_frame.pack(fill="x", padx=30)
         
         summary = self.portfolio.get_summary()
-        self.create_stat_card(stats_frame, "Portfolio Value", f"${summary['total_value']:,.2f}", 0)
-        self.create_stat_card(stats_frame, "Profit / Loss", f"${summary['total_profit_loss']:,.2f}", 1)
-        self.create_stat_card(stats_frame, "ROI Status", f"{summary['total_roi']:.2f}%", 2)
+        self.create_stat_card(stats_frame, "AUM TOTAL VALUE", f"${summary['total_value']:,.2f}", 0)
+        self.create_stat_card(stats_frame, "P/L REALIZED", f"${summary['total_profit_loss']:,.2f}", 1)
+        self.create_stat_card(stats_frame, "ROI PERFORMANCE", f"{summary['total_roi']:.2f}%", 2)
         
-        # Add a status message area
-        self.status_label = ctk.CTkLabel(self.pages["Dashboard"], text="", font=ctk.CTkFont(size=12))
-        self.status_label.pack(pady=10)
+        # Status area
+        self.status_label = ctk.CTkLabel(self.pages["Dashboard"], text="System Status: Operational", 
+                                        font=ctk.CTkFont(size=11), text_color=COLORS["success"])
+        self.status_label.pack(pady=15)
         
-        # Add a quick lookup entry
-        lookup_frame = ctk.CTkFrame(self.pages["Dashboard"])
-        lookup_frame.pack(fill="x", padx=20, pady=20)
+        # Enhanced Lookup
+        lookup_card = ctk.CTkFrame(self.pages["Dashboard"], fg_color=COLORS["surface"], corner_radius=12, border_width=1, border_color="#1E293B")
+        lookup_card.pack(fill="x", padx=30, pady=10)
         
-        self.lookup_entry = ctk.CTkEntry(lookup_frame, placeholder_text="Enter Ticker (e.g. AAPL)")
-        self.lookup_entry.pack(side="left", padx=10, pady=10, expand=True, fill="x")
+        ctk.CTkLabel(lookup_card, text="QUICK MARKET LOOKUP", font=ctk.CTkFont(size=12, weight="bold"), text_color=COLORS["text_dark"]).pack(pady=(10, 5))
         
-        self.lookup_button = ctk.CTkButton(lookup_frame, text="Quick Analysis", command=self.quick_analysis)
-        self.lookup_button.pack(side="right", padx=10, pady=10)
+        entry_container = ctk.CTkFrame(lookup_card, fg_color="transparent")
+        entry_container.pack(fill="x", padx=20, pady=(0, 15))
+        
+        self.lookup_entry = ctk.CTkEntry(entry_container, placeholder_text="Symbol (e.g. BTC-USD)", height=40, font=ctk.CTkFont(size=14))
+        self.lookup_entry.pack(side="left", padx=(0, 10), expand=True, fill="x")
+        
+        self.lookup_button = ctk.CTkButton(entry_container, text="QUERY ENGINE", height=40, width=150, 
+                                           fg_color=COLORS["primary"], hover_color=COLORS["accent"],
+                                           font=ctk.CTkFont(size=13, weight="bold"),
+                                           command=self.quick_analysis)
+        self.lookup_button.pack(side="right")
 
     def quick_analysis(self):
         ticker = self.lookup_entry.get().upper()
@@ -162,39 +182,52 @@ class StockTrackerApp(ctk.CTk):
             self.show_analysis(ticker)
 
     def create_stat_card(self, parent, title, value, column):
-        card = ctk.CTkFrame(parent, corner_radius=10, border_width=1)
-        card.grid(row=0, column=column, padx=10, pady=10, sticky="nsew")
+        card = ctk.CTkFrame(parent, corner_radius=12, fg_color=COLORS["surface"], border_width=1, border_color="#1E293B")
+        card.grid(row=0, column=column, padx=8, pady=10, sticky="nsew")
         parent.grid_columnconfigure(column, weight=1)
         
-        ctk.CTkLabel(card, text=title, font=ctk.CTkFont(size=12)).pack(pady=(15, 0))
-        ctk.CTkLabel(card, text=value, font=ctk.CTkFont(size=22, weight="bold")).pack(pady=(5, 15))
+        ctk.CTkLabel(card, text=title, font=ctk.CTkFont(size=11, weight="bold"), text_color=COLORS["text_dark"]).pack(pady=(15, 0))
+        ctk.CTkLabel(card, text=value, font=ctk.CTkFont(size=24, weight="bold"), text_color=COLORS["text"]).pack(pady=(5, 15))
 
     def show_portfolio(self):
         self.show_page("Portfolio")
         for widget in self.pages["Portfolio"].winfo_children():
             widget.destroy()
             
-        header = ctk.CTkLabel(self.pages["Portfolio"], text="Stock Portfolio", 
-                              font=ctk.CTkFont(size=24, weight="bold"))
-        header.pack(pady=20)
+        header = ctk.CTkLabel(self.pages["Portfolio"], text="PORTFOLIO GOVERNANCE", 
+                              font=ctk.CTkFont(size=24, weight="bold"), text_color=COLORS["text"])
+        header.pack(pady=(20, 10))
 
-        # Add form
-        form_frame = ctk.CTkFrame(self.pages["Portfolio"])
-        form_frame.pack(fill="x", padx=20, pady=10)
+        # Trade Execution Form
+        form_card = ctk.CTkFrame(self.pages["Portfolio"], fg_color=COLORS["surface"], corner_radius=12, border_width=1, border_color="#1E293B")
+        form_card.pack(fill="x", padx=30, pady=10)
         
-        self.p_ticker = ctk.CTkEntry(form_frame, placeholder_text="Ticker")
-        self.p_ticker.grid(row=0, column=0, padx=5, pady=5)
-        self.p_qty = ctk.CTkEntry(form_frame, placeholder_text="Quantity")
-        self.p_qty.grid(row=0, column=1, padx=5, pady=5)
-        self.p_price = ctk.CTkEntry(form_frame, placeholder_text="Price")
-        self.p_price.grid(row=0, column=2, padx=5, pady=5)
+        ctk.CTkLabel(form_card, text="TRADE EXECUTION DESK", font=ctk.CTkFont(size=12, weight="bold"), text_color=COLORS["text_dark"]).pack(pady=(10, 5))
         
-        ctk.CTkButton(form_frame, text="Add/Update Position", command=self.add_position).grid(row=0, column=3, padx=5, pady=5)
-        ctk.CTkButton(form_frame, text="Clear", command=self.clear_portfolio_form, fg_color="gray").grid(row=0, column=4, padx=5, pady=5)
+        f_row = ctk.CTkFrame(form_card, fg_color="transparent")
+        f_row.pack(fill="x", padx=20, pady=(0, 15))
+        
+        self.p_ticker = ctk.CTkEntry(f_row, placeholder_text="Ticker", width=120, height=35)
+        self.p_ticker.pack(side="left", padx=5)
+        self.p_qty = ctk.CTkEntry(f_row, placeholder_text="QTY", width=100, height=35)
+        self.p_qty.pack(side="left", padx=5)
+        self.p_price = ctk.CTkEntry(f_row, placeholder_text="Avg Price", width=120, height=35)
+        self.p_price.pack(side="left", padx=5)
+        
+        ctk.CTkButton(f_row, text="OPEN POSITION", width=140, height=35, 
+                     fg_color=COLORS["primary"], hover_color=COLORS["accent"],
+                     font=ctk.CTkFont(size=12, weight="bold"),
+                     command=self.add_position).pack(side="left", padx=(15, 5))
+        
+        ctk.CTkButton(f_row, text="RESET", width=80, height=35, fg_color="#334155", 
+                     command=self.clear_portfolio_form).pack(side="right")
 
         # Holdings table
-        table_frame = ctk.CTkScrollableFrame(self.pages["Portfolio"], label_text="Holdings")
-        table_frame.pack(fill="both", expand=True, padx=20, pady=10)
+        table_card = ctk.CTkFrame(self.pages["Portfolio"], fg_color=COLORS["surface"], corner_radius=12, border_width=1, border_color="#1E293B")
+        table_card.pack(fill="both", expand=True, padx=30, pady=10)
+        
+        table_frame = ctk.CTkScrollableFrame(table_card, fg_color="transparent", label_text="ACTIVE ASSET HOLDINGS", label_text_color=COLORS["text_dark"])
+        table_frame.pack(fill="both", expand=True, padx=10, pady=10)
         
         summary = self.portfolio.get_summary()
         if summary['holdings']:
@@ -261,22 +294,28 @@ class StockTrackerApp(ctk.CTk):
         for widget in self.pages["Analysis"].winfo_children():
             widget.destroy()
             
-        header = ctk.CTkLabel(self.pages["Analysis"], text="Technical Analysis", 
-                              font=ctk.CTkFont(size=24, weight="bold"))
+        header = ctk.CTkLabel(self.pages["Analysis"], text="QUANTITATIVE TECHNICALS", 
+                              font=ctk.CTkFont(size=24, weight="bold"), text_color=COLORS["text"])
         header.pack(pady=(20, 10))
         
-        search_frame = ctk.CTkFrame(self.pages["Analysis"])
-        search_frame.pack(fill="x", padx=20)
+        search_card = ctk.CTkFrame(self.pages["Analysis"], fg_color=COLORS["surface"], corner_radius=12, border_width=1, border_color="#1E293B")
+        search_card.pack(fill="x", padx=30, pady=10)
         
-        self.a_ticker = ctk.CTkEntry(search_frame, placeholder_text="Search Symbol...")
+        search_row = ctk.CTkFrame(search_card, fg_color="transparent")
+        search_row.pack(fill="x", padx=20, pady=15)
+        
+        self.a_ticker = ctk.CTkEntry(search_row, placeholder_text="Enter Operational Ticker...", height=40)
         if ticker: self.a_ticker.insert(0, ticker)
-        self.a_ticker.pack(side="left", padx=10, pady=10, expand=True, fill="x")
+        self.a_ticker.pack(side="left", padx=(0, 15), expand=True, fill="x")
         
-        self.a_button = ctk.CTkButton(search_frame, text="Run Analysis", command=self.run_analysis)
-        self.a_button.pack(side="right", padx=10, pady=10)
+        self.a_button = ctk.CTkButton(search_row, text="START ENGINE", height=40, width=150,
+                                     fg_color=COLORS["primary"], hover_color=COLORS["accent"],
+                                     font=ctk.CTkFont(size=13, weight="bold"),
+                                     command=self.run_analysis)
+        self.a_button.pack(side="right")
         
-        self.chart_container = ctk.CTkFrame(self.pages["Analysis"])
-        self.chart_container.pack(fill="both", expand=True, padx=20, pady=10)
+        self.chart_container = ctk.CTkFrame(self.pages["Analysis"], fg_color=COLORS["surface"], corner_radius=12, border_width=1, border_color="#1E293B")
+        self.chart_container.pack(fill="both", expand=True, padx=30, pady=10)
         
         if ticker:
             self.run_analysis()
@@ -311,76 +350,81 @@ class StockTrackerApp(ctk.CTk):
         self.show_page("AI Predictions")
         for widget in self.pages["AI Predictions"].winfo_children(): widget.destroy()
         
-        ctk.CTkLabel(self.pages["AI Predictions"], text="AI Price Forecast", 
-                    font=ctk.CTkFont(size=24, weight="bold")).pack(pady=20)
+        header = ctk.CTkLabel(self.pages["AI Predictions"], text="PREDICTIVE INTELLIGENCE", 
+                             font=ctk.CTkFont(size=24, weight="bold"), text_color=COLORS["text"])
+        header.pack(pady=(20, 10))
         
-        pred_entry_frame = ctk.CTkFrame(self.pages["AI Predictions"])
-        pred_entry_frame.pack(fill="x", padx=20)
+        # Prediction Input Card
+        input_card = ctk.CTkFrame(self.pages["AI Predictions"], fg_color=COLORS["surface"], corner_radius=12, border_width=1, border_color="#1E293B")
+        input_card.pack(fill="x", padx=30, pady=10)
         
-        self.pred_ticker = ctk.CTkEntry(pred_entry_frame, placeholder_text  ="Enter Ticker for Prediction")
-        self.pred_ticker.pack(side="left", padx=10, pady=10, expand=True, fill="x")
+        col_frame = ctk.CTkFrame(input_card, fg_color="transparent")
+        col_frame.pack(fill="x", padx=20, pady=15)
+        
+        self.pred_ticker = ctk.CTkEntry(col_frame, placeholder_text="Symbol Target", height=40, width=200)
+        self.pred_ticker.pack(side="left", padx=(0, 15))
         
         self.fast_mode_var = tk.BooleanVar(value=True)
-        self.fast_mode_cb = ctk.CTkCheckBox(pred_entry_frame, text="Fast Mode (No News)", variable=self.fast_mode_var)
+        self.fast_mode_cb = ctk.CTkCheckBox(col_frame, text="Fast Analysis Mode", text_color=COLORS["text_dark"], 
+                                            variable=self.fast_mode_var, font=ctk.CTkFont(size=12))
         self.fast_mode_cb.pack(side="left", padx=10)
         
-        self.pred_btn = ctk.CTkButton(pred_entry_frame, text="Generate Forecast", command=self.run_prediction)
-        self.pred_btn.pack(side="right", padx=10, pady=10)
+        self.pred_btn = ctk.CTkButton(col_frame, text="EXECUTE FORECAST", height=40, width=180,
+                                     fg_color=COLORS["primary"], hover_color=COLORS["accent"],
+                                     font=ctk.CTkFont(size=13, weight="bold"),
+                                     command=self.run_prediction)
+        self.pred_btn.pack(side="right")
         
-        self.pred_results = ctk.CTkFrame(self.pages["AI Predictions"])
-        self.pred_results.pack(fill="both", expand=True, padx=20, pady=10)
+        # Results area splits into Table and Insights
+        self.results_container = ctk.CTkFrame(self.pages["AI Predictions"], fg_color="transparent")
+        self.results_container.pack(fill="both", expand=True, padx=30, pady=10)
         
-        self.pred_insights = ctk.CTkScrollableFrame(self.pages["AI Predictions"], height=150, label_text="Market Insights & Risks")
-        self.pred_insights.pack(fill="x", padx=20, pady=(0, 20))
+        self.pred_results = ctk.CTkFrame(self.results_container, fg_color=COLORS["surface"], corner_radius=12, border_width=1, border_color="#1E293B")
+        self.pred_results.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
+        
+        self.pred_insights = ctk.CTkScrollableFrame(self.results_container, fg_color=COLORS["surface"], corner_radius=12, 
+                                                   border_width=1, border_color="#1E293B", label_text="INTELLIGENCE FEED")
+        self.pred_insights.grid(row=0, column=1, sticky="nsew", padx=(10, 0))
+        
+        self.results_container.grid_columnconfigure(0, weight=3)
+        self.results_container.grid_columnconfigure(1, weight=2)
+        self.results_container.grid_rowconfigure(0, weight=1)
 
     def run_prediction(self):
         ticker = self.pred_ticker.get().upper()
         if not ticker: return
         
         for widget in self.pred_results.winfo_children(): widget.destroy()
-        loading = ctk.CTkLabel(self.pred_results, text="Processing Deep Learning Model...")
+        for widget in self.pred_insights.winfo_children(): widget.destroy()
+        
+        loading = ctk.CTkLabel(self.pred_results, text="SYNCHRONIZING QUANTUM ENGINES...", font=ctk.CTkFont(size=14, weight="bold"), text_color=COLORS["accent"])
         loading.pack(expand=True)
         
         def job():
             is_fast = self.fast_mode_var.get()
-            res = self.predictor.predict_ensemble(ticker, days=30)
+            res = self.predictor.predict_ensemble(ticker, days=7) # Unified 7-day focus
             self.after(0, lambda: self.render_predictions(res, ticker))
         threading.Thread(target=job, daemon=True).start()
 
     def render_predictions(self, res, ticker):
         for widget in self.pred_results.winfo_children(): widget.destroy()
-        for widget in self.pred_insights.winfo_children(): widget.destroy()
         
         if res and res['success']:
-            # Main Forecast Table/List
-            ctk.CTkLabel(self.pred_results, text=f"Advanced Analytics: {ticker}", font=ctk.CTkFont(size=18, weight="bold")).pack(pady=10)
+                ctk.CTkLabel(row, text=f"${p['price']:.2f}", font=ctk.CTkFont(family="Courier", size=14, weight="bold"), text_color=COLORS["text"]).pack(side="right")
             
-            # Risk Stats Frame
-            risk_f = ctk.CTkFrame(self.pred_results)
-            risk_f.pack(fill="x", padx=10, pady=5)
-            metrics = res['risk_metrics']
-            ctk.CTkLabel(risk_f, text=f"Sharpe: {metrics['sharpe_ratio']:.2f} | Vol: {metrics['volatility']*100:.1f}% | VaR: {metrics['var_95']*100:.2f}%").pack(pady=5)
-            
-            # Action Button for Dashboard
-            dash_btn = ctk.CTkButton(self.pred_results, text="🚀 Launch Interactive Plotly Dashboard", 
-                                    fg_color="#0066ff", hover_color="#0055dd",
+            # Action Button
+            dash_btn = ctk.CTkButton(self.pred_results, text="OPEN INTERACTIVE HUB", 
+                                    height=45, fg_color=COLORS["primary"], hover_color=COLORS["accent"],
+                                    font=ctk.CTkFont(size=13, weight="bold"),
                                     command=lambda: self.open_plotly_dashboard(res))
-            dash_btn.pack(pady=20)
+            dash_btn.pack(pady=20, padx=40, fill="x")
             
             # Insights
             for insight in res['insights']:
-                ctk.CTkLabel(self.pred_insights, text=f"• {insight}", anchor="w", wraplength=800).pack(fill="x", padx=10, pady=2)
-                
-            # Render a static matplotlib preview
-            static_data = pd.DataFrame(res['forecast'])
-            # (Simplification: just list top 5)
-            ctk.CTkLabel(self.pred_results, text="Next 5 Days Forecast Snapshot:").pack(pady=5)
-            for i in range(5):
-                p = res['forecast'][i]
-                ctk.CTkLabel(self.pred_results, text=f"{p['date']}: ${p['price']:.2f} (±${(p['upper']-p['price']):.2f})").pack()
+                ctk.CTkLabel(self.pred_insights, text=f"• {insight}", anchor="w", wraplength=350, 
+                             font=ctk.CTkFont(size=12), text_color=COLORS["text"]).pack(fill="x", padx=10, pady=5)
         else:
-            err = res.get('error', 'Prediction failed.') if res else 'Prediction failed.'
-            ctk.CTkLabel(self.pred_results, text=f"❌ {err}").pack(expand=True)
+            ctk.CTkLabel(self.pred_results, text=f"ERROR: {res.get('error', 'Pulse Interrupted')}", text_color=COLORS["danger"]).pack(expand=True)
 
     def open_plotly_dashboard(self, res):
         path = PlotlyDashboard.create_forecast_dashboard(res)
