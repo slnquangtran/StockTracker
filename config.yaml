@@ -1,0 +1,86 @@
+# Application Configuration
+
+# Portfolio Settings
+portfolio:
+  default_name: "My Portfolio"
+  data_file: "data/portfolio.json"
+
+# Data Fetching
+data:
+  cache_duration: 300  # seconds
+  default_period: "1y"
+  default_interval: "1d"
+
+# Technical Indicators
+indicators:
+  sma_periods: [20, 50, 200]
+  rsi_period: 14
+  macd:
+    fast_period: 12
+    slow_period: 26
+    signal_period: 9
+  bollinger_bands:
+    period: 20
+    std_dev: 2
+
+# LSTM Model
+lstm:
+  sequence_length: 60
+  epochs: 50
+  batch_size: 32
+  validation_split: 0.2
+  model_save_path: "models/saved/"
+  retrain_interval: 7  # days
+
+# Sentiment Analysis
+sentiment:
+  news_lookback_days: 7
+  min_articles: 5
+  sources: ["newsapi"]  # Can add "reddit" if configured
+
+# Anomaly Detection
+anomaly:
+  contamination: 0.1  # Expected proportion of outliers
+  z_score_threshold: 3
+  volume_spike_threshold: 2.5
+
+# Recommendations
+recommendations:
+  weights:
+    technical: 0.3
+    sentiment: 0.2
+    prediction: 0.3
+    anomaly: 0.2
+  confidence_threshold: 0.6
+
+# Portfolio Optimization
+optimization:
+  risk_free_rate: 0.02  # 2% annual
+  target_return: 0.15   # 15% annual
+  max_weight: 0.4       # Maximum 40% in single stock
+  min_weight: 0.05      # Minimum 5% in single stock
+
+# Alerts
+alerts:
+  email:
+    enabled: true
+    daily_summary: true
+    summary_time: "09:00"
+  sms:
+    enabled: false  # Set to true if Twilio configured
+    critical_only: true
+  price_change_threshold: 0.05  # 5% change triggers alert
+  anomaly_alert: true
+
+# Backtesting
+backtesting:
+  initial_capital: 10000
+  commission: 0.001  # 0.1% per trade
+  slippage: 0.0005   # 0.05%
+
+# Streamlit Dashboard
+dashboard:
+  refresh_interval: 60  # seconds
+  max_stocks_display: 20
+  chart_height: 400
+  theme: "dark"
