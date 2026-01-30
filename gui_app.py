@@ -46,7 +46,7 @@ class StockTrackerApp(ctk.CTk):
         super().__init__()
         
         # Configure window
-        self.title("Stock Tracker Pro | Institutional Intelligence")
+        self.title("MarketMinder | Institutional Intelligence")
         self.geometry("1200x850")
         self.configure(fg_color=COLORS["bg_deep"])
         
@@ -66,7 +66,7 @@ class StockTrackerApp(ctk.CTk):
         self.sidebar_frame.grid(row=0, column=0, sticky="nsew")
         self.sidebar_frame.grid_rowconfigure(9, weight=1)
         
-        self.logo_label = ctk.CTkLabel(self.sidebar_frame, text="STOCK TRACKER", 
+        self.logo_label = ctk.CTkLabel(self.sidebar_frame, text="MarketMinder", 
                                        font=ctk.CTkFont(size=22, weight="bold"), text_color=COLORS["primary"])
         self.logo_label.grid(row=0, column=0, padx=20, pady=(30, 5))
         self.sub_logo = ctk.CTkLabel(self.sidebar_frame, text="QUANTUM EDITION", 
